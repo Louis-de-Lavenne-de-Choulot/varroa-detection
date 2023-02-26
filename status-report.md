@@ -21,5 +21,5 @@ I have made significant progress in training the model to detect Varroa on bees.
 ### Users
 I have one beekeeper that allowed the test on his beehives once the product is realised as long as no harm is done to the bees. The problem is: will there be varroa to detect on any of his beehives ? I am searching for other beekeepers to extend the testing. For now any real life testing would at least permit to test if no false alarm is raised or if the bees attack the device.
 
-### Current and next Step
+### Current and next Steps
 I am making steady progress towards the goal of developing the AI system for detecting Varroa on bees. I will continue to explore new techniques and solutions to improve the accuracy and efficiency of the model. Once the AI is able to detect through a camera, the next step will be the hardware.
