@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Settings</title>
+</head>
+<body>
+    <h1>Camera Settings</h1>
+    <form method="POST" action="{{ url_for('settings') }}">
+        <label for="gain">Gain:</label>
+        <input type="number" name="gain" id="gain" value="{{ gain }}" />
+        <br>
+        <label for="brightness">Brightness:</label>
+        <input type="number" name="brightness" id="brightness" value="{{ brightness }}" />
+        <br>
+        <label for="contrast">Contrast:</label>
+        <input type="number" name="contrast" id="contrast" value="{{ contrast }}" />
+        <br>
+        <label for="saturation">Saturation:</label>
+        <input type="number" name="saturation" id="saturation" value="{{ saturation }}" />
+        <br>
+        <label for="exposure">Exposure:</label>
+        <input type="number" name="exposure" id="exposure" value="{{ exposure }}" />
+        <br>
+        <input type="submit" value="Update" />
+    </form>
+</body>
+</html>
