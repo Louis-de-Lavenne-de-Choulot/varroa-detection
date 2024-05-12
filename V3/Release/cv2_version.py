@@ -1,12 +1,8 @@
 import io
 import os
 import sys
-import subprocess
-import re
 import time
 from pathlib import Path
-import tkinter as tk
-from PIL import Image, ImageTk
 import torch
 from ultralytics.utils.plotting import Annotator, colors, save_one_box
 from yolov5.models.common import DetectMultiBackend
@@ -114,7 +110,7 @@ def detect_single_image(weights, source, imgsz, conf_thres, iou_thres, max_det, 
 def capture_and_process_images(interval=10):
     image_count = 0
     # while True:
-    if True:
+    while True:
         # Capture an image using ffmpeg and save it with a unique filename
         timestamp = time.strftime("%Y%m%d%H%M%S")  # Generate a timestamp
         image_name = f"image_{timestamp}_{image_count}.jpg"
@@ -122,8 +118,8 @@ def capture_and_process_images(interval=10):
         
         # Read the frame from the video capture device
         ret, frame = cap.read()
-        # if not ret:
-        #     continue
+        if not ret:
+            continue
         cv2.imwrite(image_path, frame)
 
         # Perform image detection
@@ -146,89 +142,20 @@ if __name__ == '__main__':
 
     # Initialize the VideoCapture object
     cap = cv2.VideoCapture(0)
+    # Camera Settings
+    cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3)
     # Check if the VideoCapture object is   initialized successfully
     if not cap.isOpened():
         raise ValueError("Failed to open the video capture device")
 
-from flask import Flask, render_template, Response, request
+    capture_and_process_images(20)
 
-app = Flask(__name__)
-
-# Camera Settings
-gain = 174
-cap.set(cv2.CAP_PROP_GAIN, gain)
-brightness = 50
-cap.set(cv2.CAP_PROP_BRIGHTNESS, brightness)
-contrast = 67
-cap.set(cv2.CAP_PROP_CONTRAST, contrast)
-saturation = 85
-cap.set(cv2.CAP_PROP_SATURATION, saturation)
-exposure = -6
-cap.set(cv2.CAP_PROP_EXPOSURE, exposure)
-
-
-def adjust_camera_settings(gain, brightness, contrast, saturation, exposure):
-    cap.set(cv2.CAP_PROP_GAIN, int(gain))
-    cap.set(cv2.CAP_PROP_BRIGHTNESS, int(brightness))
-    cap.set(cv2.CAP_PROP_CONTRAST, int(contrast))
-    cap.set(cv2.CAP_PROP_SATURATION, int(saturation))
-    cap.set(cv2.CAP_PROP_EXPOSURE, int(exposure))
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        gain = request.form['gain']
-        brightness = request.form['brightness']
-        contrast = request.form['contrast']
-        saturation = request.form['saturation']
-        exposure = request.form['exposure']
-        adjust_camera_settings(gain, brightness, contrast, saturation, exposure)# Get the current camera settings
-    gain = cap.get(cv2.CAP_PROP_GAIN)
-    brightness = cap.get(cv2.CAP_PROP_BRIGHTNESS)
-    contrast = cap.get(cv2.CAP_PROP_CONTRAST)
-    saturation = cap.get(cv2.CAP_PROP_SATURATION)
-    exposure = cap.get(cv2.CAP_PROP_EXPOSURE)
-
-    return render_template('index.html', gain=int(gain), brightness=int(brightness), contrast=int(contrast),
-   saturation=int(saturation), exposure=int(exposure))
-
-
-# Function to generate video frames
-def generate_frames():
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        # Convert the frame from BGR to RGB
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # Resize the frame to fit the window
-        frame_resized = cv2.resize(frame_rgb, (640, 480))
-
-        # Convert the frame to PIL Image format
-        pil_image = Image.fromarray(frame_resized)
-        # Convert PIL Image to byte array
-        img_byte_arr = io.BytesIO()
-        pil_image.save(img_byte_arr, format='JPEG')
-        img_byte_arr = img_byte_arr.getvalue()
-
-        # Yield the byte array as a video frame
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + img_byte_arr + b'\r\n')
-
-
-# Route for video feed
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=4025)
-
+        # # Convert the frame from BGR to RGB
+        # frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
 # Release the VideoCapture object
 cap.release()
 
 # Close all OpenCV windows
 cv2.destroyAllWindows()
+
