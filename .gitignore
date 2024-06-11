@@ -1,1 +1,3 @@
 .conda/*
+/V3/Release/build
+V3/Release/dist/cv2_version.exe
